@@ -1,5 +1,6 @@
-use gtk::{glib, Application, ApplicationWindow};
+mod editor;
 use gtk::{prelude::*, Box, Button, TextView};
+use gtk::{Application, ApplicationWindow};
 
 const APP_ID: &str = "org.eric.KotlinsRunner";
 
@@ -28,7 +29,10 @@ fn build_ui(app: &Application) {
         btn.set_label("Hello world");
     });
 
+    let buffer = editor::HighlightEditor::new();
+
     let tv = TextView::builder()
+        .buffer(&buffer)
         .margin_top(12)
         .margin_bottom(12)
         .margin_start(12)
