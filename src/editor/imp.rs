@@ -22,6 +22,12 @@ impl ObjectSubclass for HighlightEditor {
         keywords_highlight_table.insert("if".to_string(), "blue".to_string());
         keywords_highlight_table.insert("true".to_string(), "green".to_string());
         keywords_highlight_table.insert("false".to_string(), "red".to_string());
+        keywords_highlight_table.insert("break".to_string(), "green".to_string());
+        keywords_highlight_table.insert("continue".to_string(), "green".to_string());
+        keywords_highlight_table.insert("do".to_string(), "green".to_string());
+        keywords_highlight_table.insert("class".to_string(), "green".to_string());
+        keywords_highlight_table.insert("for".to_string(), "green".to_string());
+        keywords_highlight_table.insert("else".to_string(), "green".to_string());
         Self {
             keywords_highlight_table,
         }
