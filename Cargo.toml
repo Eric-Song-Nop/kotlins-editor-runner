@@ -10,3 +10,4 @@ async-channel = "2.1.1"
 async-std = { version = "1.12.0", features = ["unstable"] }
 glib = "0.18.4"
 gtk = { version = "0.7.3", package = "gtk4", features = ["v4_12"] }
+regex = "1.10.2"

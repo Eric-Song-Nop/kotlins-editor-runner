@@ -1,4 +1,5 @@
 mod editor;
+mod error_buffer;
 
 use glib::clone;
 use gtk::{prelude::*, Box, Button, TextView};
@@ -33,7 +34,7 @@ fn build_ui(app: &Application) {
 
     // Create a buffer for the output
     let buffer_output = gtk::TextBuffer::new(None::<&gtk::TextTagTable>);
-    let buffer_error = gtk::TextBuffer::new(None::<&gtk::TextTagTable>);
+    let buffer_error = error_buffer::ErrorBuffer::new();
     let editor_title = gtk::Label::builder()
         .margin_top(12)
         .margin_bottom(12)
