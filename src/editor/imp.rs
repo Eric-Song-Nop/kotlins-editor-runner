@@ -41,20 +41,26 @@ impl ObjectImpl for HighlightEditor {
 impl TextBufferImpl for HighlightEditor {
     fn changed(&self) {
         self.parent_changed();
+        // Remove all tags
+        let start_iter = self.obj().start_iter();
+        let end_iter = self.obj().end_iter();
+        self.obj().remove_all_tags(&start_iter, &end_iter);
+
         // Highlight keywords
         for (keyword, _) in &self.keywords_highlight_table {
             let mut start_iter = self.obj().start_iter();
 
             // println!("Searching for keyword: {}", keyword);
 
-            while let Some((l_iter, r_iter)) = start_iter.forward_search(
-                keyword,
-                gtk::TextSearchFlags::VISIBLE_ONLY,
-                None,
-            ) {
-                self.obj()
-                    .apply_tag_by_name(keyword, &l_iter, &r_iter);
-                // println!("Found keyword: {} at {}", keyword, l_iter.offset());
+            while let Some((l_iter, r_iter)) =
+                start_iter.forward_search(keyword, gtk::TextSearchFlags::VISIBLE_ONLY, None)
+            {
+                // Look behind for (?<![a-zA-Z0-9])
+                if l_iter.starts_word() && r_iter.ends_word() {
+                    // println!("Found keyword: {} at {}", keyword, l_iter.offset());
+                    self.obj().apply_tag_by_name(keyword, &l_iter, &r_iter);
+                }
+
                 start_iter = r_iter.clone();
             }
         }
