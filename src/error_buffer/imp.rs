@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 
 use gtk::glib;
 use gtk::prelude::{TextBufferExt, TextBufferExtManual};

@@ -1,9 +1,12 @@
 mod editor;
 mod error_buffer;
 
+use std::process::Stdio;
+
 use glib::clone;
 use gtk::{prelude::*, Box, Button, TextView};
 use gtk::{Application, ApplicationWindow};
+use async_std::io::ReadExt;
 
 const TMP_FILE: &str = "/tmp/main.kts";
 
@@ -109,24 +112,34 @@ fn build_ui(app: &Application) {
             let mut end_iter = buffer_error.end_iter();
             buffer_error.delete(&mut start_iter, &mut end_iter);
             // Run the file with kotlin
-            let output = async_std::process::Command::new("kotlinc")
+            let mut output = async_std::process::Command::new("kotlinc")
                 .arg("-script")
                 .arg(TMP_FILE)
-                .output()
-                .await
+                .stderr(Stdio::piped())
+                .stdout(Stdio::piped())
+                .spawn()
                 .unwrap();
 
-            // Print the output no matter stdout or stderr
-            let stdoutput = String::from_utf8(output.stdout).unwrap();
-            let stderror = String::from_utf8(output.stderr).unwrap();
-            println!("{}", stdoutput);
-            println!("{}", stderror);
-            let mut start_iter = buffer_output.start_iter();
-
-            buffer_output.insert(&mut start_iter, &stdoutput);
-
-            let mut start_iter = buffer_error.start_iter();
-            buffer_error.insert(&mut start_iter, &stderror);
+            while output.try_status().unwrap().is_none(){
+                let mut stdoutput = output.stdout.as_mut().unwrap();
+                let mut stderror = output.stderr.as_mut().unwrap();
+                let mut buffer = [0; 1024];
+                let n = stdoutput.read(&mut buffer).await.unwrap();
+                let mut start_iter = buffer_output.end_iter();
+                buffer_output.insert(&mut start_iter, &String::from_utf8_lossy(&buffer[..n]));
+                let n = stderror.read(&mut buffer).await.unwrap();
+                let mut start_iter = buffer_error.end_iter();
+                buffer_error.insert(&mut start_iter, &String::from_utf8_lossy(&buffer[..n]));
+            }
+                let mut stdoutput = output.stdout.as_mut().unwrap();
+                let mut stderror = output.stderr.as_mut().unwrap();
+                let mut buffer = [0; 1024];
+                let n = stdoutput.read(&mut buffer).await.unwrap();
+                let mut start_iter = buffer_output.end_iter();
+                buffer_output.insert(&mut start_iter, &String::from_utf8_lossy(&buffer[..n]));
+                let n = stderror.read(&mut buffer).await.unwrap();
+                let mut start_iter = buffer_error.end_iter();
+                buffer_error.insert(&mut start_iter, &String::from_utf8_lossy(&buffer[..n]));
 
             // Enable the button
             btn.set_sensitive(true);
