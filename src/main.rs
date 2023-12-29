@@ -121,8 +121,8 @@ fn build_ui(app: &Application) {
                 .unwrap();
 
             while output.try_status().unwrap().is_none(){
-                let mut stdoutput = output.stdout.as_mut().unwrap();
-                let mut stderror = output.stderr.as_mut().unwrap();
+                let stdoutput = output.stdout.as_mut().unwrap();
+                let stderror = output.stderr.as_mut().unwrap();
                 let mut buffer = [0; 1024];
                 let n = stdoutput.read(&mut buffer).await.unwrap();
                 let mut start_iter = buffer_output.end_iter();
@@ -131,8 +131,8 @@ fn build_ui(app: &Application) {
                 let mut start_iter = buffer_error.end_iter();
                 buffer_error.insert(&mut start_iter, &String::from_utf8_lossy(&buffer[..n]));
             }
-                let mut stdoutput = output.stdout.as_mut().unwrap();
-                let mut stderror = output.stderr.as_mut().unwrap();
+                let stdoutput = output.stdout.as_mut().unwrap();
+                let stderror = output.stderr.as_mut().unwrap();
                 let mut buffer = [0; 1024];
                 let n = stdoutput.read(&mut buffer).await.unwrap();
                 let mut start_iter = buffer_output.end_iter();
