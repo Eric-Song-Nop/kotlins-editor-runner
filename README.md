@@ -2,6 +2,8 @@
 
 Simple editor and code runner for kotlin script for Jetbrains Internship task for fleet.
 
+https://github.com/Eric-Song-Nop/kotlins-editor-runner/assets/41675306/91b22412-f864-44a2-807f-3a7120c964b6
+
 ## Functionalities
 
 - [x] Live output
